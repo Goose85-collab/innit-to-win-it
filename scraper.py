@@ -227,7 +227,7 @@ def main():
             locale="en-GB",
             viewport={"width": 1366, "height": 900},
         )
-                for fn in (scrape_ooosch, scrape_mckinney):
+        for fn in (scrape_ooosch, scrape_mckinney):
             try:
                 got = fn()
                 all_comps += got
