@@ -96,6 +96,53 @@ def scrape_bear():
             print("bear skip", url, e)
     return comps
 
+# ---------- That Prize Guy (£) ----------
+def scrape_thatprizeguy():
+    BASE = "https://thatprizeguy.co.uk"
+    html = fetch(BASE + "/competitions")
+    comps = []
+    # Each card links to /competitions/<slug> ; split the page by those links
+    parts = re.split(r'href="https://thatprizeguy\.co\.uk/competitions/', html)
+    seen = set()
+    for part in parts[1:]:
+        slug_m = re.match(r'([a-z0-9\-]+)"', part)
+        if not slug_m:
+            continue
+        slug = slug_m.group(1)
+        if slug in seen:
+            continue
+        # tickets sold / total e.g. >2,961</span> / 250,000
+        tk = re.search(r'>([\d,]+)</span>\s*/\s*([\d,]+)', part)
+        if not tk:
+            continue
+        sold_n = int(tk.group(1).replace(",", ""))
+        maxn = int(tk.group(2).replace(",", ""))
+        if not maxn:
+            continue
+        seen.add(slug)
+        # ticket price e.g. font-bold"> 3p</span>  or  >20p<  or  >£2.99<
+        price = 0
+        pm = re.search(r'font-bold">\s*(£?[\d.,]+\s*p?|\d+p)\s*</span>', part)
+        if pm:
+            price = gbp(pm.group(1)) or 0
+        # build a readable title from the slug
+        title = slug.replace("ps", "£").replace("-", " ")
+        title = re.sub(r'£(\d)', r'£\1', title).title().replace("£", "£")
+        d = {
+            "site": "That Prize Guy",
+            "url": BASE + "/competitions/" + slug,
+            "currency": "£",
+            "prize": slug.replace("-", " ").title(),
+            "price": price,
+            "maxTickets": maxn,
+            "sold": round(sold_n / maxn * 100, 1),
+            "value": max_amount(slug.replace("ps", "£").replace("-", " "), "£"),
+            "drawDate": ""
+        }
+        comps.append(d)
+    print("  thatprizeguy found", len(comps), "competitions")
+    return comps
+
 # ---------- Ooosch (€) ----------
 def scrape_ooosch():
     BASE = "https://www.ooosch.com"
@@ -146,7 +193,7 @@ def main():
             locale="en-GB",
             viewport={"width": 1366, "height": 900},
         )
-        for fn in (scrape_bear, scrape_ooosch):
+        for fn in (scrape_ooosch, scrape_thatprizeguy):
             try:
                 got = fn()
                 all_comps += got
