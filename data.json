@@ -5,44 +5,44 @@
       "site": "Ooosch",
       "url": "https://www.ooosch.com/product/win-three-bed-house-in-dublin",
       "currency": "€",
-      "prize": "Win a 3 Bed House in Dublin for â¬2.99 (or â¬450,000 Tax Free Cash)",
+      "prize": "Win a 3 Bed House in Dublin for €2.99 (or €450,000 Tax Free Cash)",
       "price": 1.49,
       "maxTickets": 999999,
       "sold": 50.4,
-      "value": 0,
+      "value": 450000.0,
       "drawDate": "2026-06-10"
     },
     {
       "site": "Ooosch",
       "url": "https://www.ooosch.com/product/space-race-instant-scratch",
       "currency": "€",
-      "prize": "â¬350,000 Cash Space Race Instant Scratch",
+      "prize": "€350,000 Cash Space Race Instant Scratch",
       "price": 1.49,
       "maxTickets": 599999,
-      "sold": 50.7,
-      "value": 0,
+      "sold": 50.8,
+      "value": 350000.0,
       "drawDate": "2026-06-17"
     },
     {
       "site": "Ooosch",
       "url": "https://www.ooosch.com/product/supercar-summer-scratch-ferrari-spyder",
       "currency": "€",
-      "prize": "SUPERCAR SUMMER SCRATCH â WIN A FERRARI SPYDER OR â¬250,000 CASH",
+      "prize": "SUPERCAR SUMMER SCRATCH – WIN A FERRARI SPYDER OR €250,000 CASH",
       "price": 1.99,
       "maxTickets": 899999,
       "sold": 5.1,
-      "value": 0,
+      "value": 250000.0,
       "drawDate": "2026-06-24"
     },
     {
       "site": "Ooosch",
       "url": "https://www.ooosch.com/product/30-000-cash-for-39c-every-friday--23",
       "currency": "€",
-      "prize": "â¬30,000 CASH for 39c - EVERY FRIDAY #23",
+      "prize": "€30,000 CASH for 39c - EVERY FRIDAY #23",
       "price": 0.39,
       "maxTickets": 199999,
       "sold": 5.6,
-      "value": 0,
+      "value": 30000.0,
       "drawDate": "2026-06-12"
     },
     {
@@ -52,7 +52,7 @@
       "prize": "WIN THIS BMW X5 For 99c",
       "price": 0.99,
       "maxTickets": 99999,
-      "sold": 11.8,
+      "sold": 11.9,
       "value": 0,
       "drawDate": "2026-06-12"
     },
@@ -71,22 +71,22 @@
       "site": "Ooosch",
       "url": "https://www.ooosch.com/product/7k-cash--6",
       "currency": "€",
-      "prize": "â¬7K Cash #6",
+      "prize": "€7K Cash #6",
       "price": 1.99,
       "maxTickets": 6999,
-      "sold": 31.3,
-      "value": 0,
+      "sold": 31.5,
+      "value": 7000.0,
       "drawDate": "2026-06-08"
     },
     {
       "site": "Ooosch",
       "url": "https://www.ooosch.com/product/2-5k-cash--10",
       "currency": "€",
-      "prize": "â¬2.5K Cash #10",
+      "prize": "€2.5K Cash #10",
       "price": 0.99,
       "maxTickets": 4999,
-      "sold": 36.8,
-      "value": 0,
+      "sold": 37.0,
+      "value": 2500.0,
       "drawDate": "2026-06-08"
     },
     {
@@ -107,7 +107,7 @@
       "prize": "Mega Tech Home Bundle #4",
       "price": 1.99,
       "maxTickets": 4999,
-      "sold": 22.9,
+      "sold": 23.0,
       "value": 0,
       "drawDate": "2026-06-09"
     },
@@ -173,7 +173,7 @@
       "prize": "Outdoor Garden Bundle #3",
       "price": 1.99,
       "maxTickets": 1999,
-      "sold": 49.3,
+      "sold": 49.4,
       "value": 0,
       "drawDate": "2026-06-09"
     },
@@ -181,11 +181,11 @@
       "site": "Ooosch",
       "url": "https://www.ooosch.com/product/4k-cash--2-1",
       "currency": "€",
-      "prize": "â¬4K Cash #2",
+      "prize": "€4K Cash #2",
       "price": 3.99,
       "maxTickets": 1999,
       "sold": 7.9,
-      "value": 0,
+      "value": 4000.0,
       "drawDate": "2026-06-10"
     },
     {
@@ -195,7 +195,7 @@
       "prize": "Charity: iPad 11th Gen #3",
       "price": 0.99,
       "maxTickets": 999,
-      "sold": 63.4,
+      "sold": 63.5,
       "value": 0,
       "drawDate": "2026-06-10"
     },
@@ -217,7 +217,7 @@
       "prize": "7 Nights in Santorini #3",
       "price": 0.99,
       "maxTickets": 5999,
-      "sold": 26.5,
+      "sold": 26.6,
       "value": 0,
       "drawDate": "2026-06-11"
     },
@@ -236,22 +236,22 @@
       "site": "Ooosch",
       "url": "https://www.ooosch.com/product/1k-center-parcs-voucher--2",
       "currency": "€",
-      "prize": "â¬1K Center Parcs Voucher #2",
+      "prize": "€1K Center Parcs Voucher #2",
       "price": 1.99,
       "maxTickets": 999,
       "sold": 36.8,
-      "value": 0,
+      "value": 1000.0,
       "drawDate": "2026-06-11"
     },
     {
       "site": "Ooosch",
       "url": "https://www.ooosch.com/product/charity---400-brown-thomas-gift-card--2-1",
       "currency": "€",
-      "prize": "Charity: â¬400 Brown Thomas Gift Card #3",
+      "prize": "Charity: €400 Brown Thomas Gift Card #3",
       "price": 0.99,
       "maxTickets": 999,
       "sold": 35.2,
-      "value": 0,
+      "value": 400.0,
       "drawDate": "2026-06-12"
     }
   ]
