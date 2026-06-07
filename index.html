@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innit to Win It</title>
+<style>
+  body { font-family: -apple-system, Arial, sans-serif; margin: 0; background: #0f1226; color: #f0f0f5; }
+  header { padding: 24px; text-align: center; background: linear-gradient(135deg,#6a11cb,#2575fc); }
+  header h1 { margin: 0; font-size: 2rem; }
+  header p { margin: 6px 0 0; opacity: .9; }
+  .updated { font-size:.8rem; opacity:.7; margin-top:4px; }
+  .controls { padding: 16px 24px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  .controls input, .controls select { padding:8px 10px; border-radius:8px; border:1px solid #444; background:#1c2040; color:#fff; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #2a2f55; font-size:.92rem; }
+  th { background:#1c2040; cursor:pointer; user-select:none; position:sticky; top:0; }
+  th:hover { background:#262c5c; }
+  tr:hover td { background:#181c3a; }
+  a { color:#7db5ff; }
+  .rating { font-weight:bold; padding:4px 10px; border-radius:20px; display:inline-block; }
+  .high { background:#1f7a3d; }
+  .mid  { background:#b58a00; }
+  .low  { background:#8a2b2b; }
+  .wrap { padding: 0 24px 40px; overflow-x:auto; }
+  caption { padding-bottom:10px; opacity:.7; font-size:.85rem; text-align:left; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🎉 Innit to Win It</h1>
+  <p>Compare prizes, odds & value across competition sites</p>
+  <p class="updated" id="updated"></p>
+</header>
+
+<div class="controls">
+  <input type="text" id="search" placeholder="🔍 Search prizes..." onkeyup="render()">
+  <select id="siteFilter" onchange="render()"><option value="">All sites</option></select>
+  <select id="sortField" onchange="render()">
+    <option value="rating">Sort: Innit Rating</option>
+    <option value="value">Sort: Prize Value</option>
+    <option value="odds">Sort: Odds</option>
+    <option value="price">Sort: Ticket Price</option>
+    <option value="sold">Sort: % Sold</option>
+  </select>
+  <select id="sortDir" onchange="render()">
+    <option value="desc">High → Low</option>
+    <option value="asc">Low → High</option>
+  </select>
+</div>
+
+<div class="wrap">
+<table>
+  <caption>Click any column header to sort. Use the boxes above to search & filter.</caption>
+  <thead>
+    <tr>
+      <th onclick="sortBy('site')">Site</th>
+      <th onclick="sortBy('prize')">Prize</th>
+      <th onclick="sortBy('value')">Value (£)</th>
+      <th onclick="sortBy('price')">Ticket (£)</th>
+      <th onclick="sortBy('odds')">Odds (1 in...)</th>
+      <th onclick="sortBy('sold')">% Sold</th>
+      <th onclick="sortBy('drawDate')">Draw Date</th>
+      <th onclick="sortBy('rating')">Innit Rating</th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+</div>
+
+<script>
+let data = [];
+
+function calcOdds(r){ return r.maxTickets; }
+function calcRating(r){
+  const raw = (r.value / r.price) / r.maxTickets;
+  return Math.min(100, Math.round(raw * 100));
+}
+function ratingClass(n){ return n>=50?'high':n>=20?'mid':'low'; }
+
+fetch('data.json?' + Date.now())
+  .then(res => res.json())
+  .then(json => {
+    data = json.competitions;
+    if(json.updated){ document.getElementById('updated').textContent = 'Last updated: ' + json.updated; }
+    populateSites();
+    render();
+  })
+  .catch(e => {
+    document.getElementById('tbody').innerHTML =
+      '<tr><td colspan="8">Could not load data. If viewing on your computer, view it via your GitHub Pages web address instead.</td></tr>';
+  });
+
+function populateSites(){
+  const sel=document.getElementById('siteFilter');
+  [...new Set(data.map(d=>d.site))].forEach(s=>{
+    const o=document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o);
+  });
+}
+
+function sortBy(field){
+  if(['rating','value','odds','price','sold'].includes(field)){
+    document.getElementById('sortField').value = field;
+  }
+  render(field);
+}
+
+function render(forceField){
+  const q=document.getElementById('search').value.toLowerCase();
+  const siteF=document.getElementById('siteFilter').value;
+  const field=forceField||document.getElementById('sortField').value;
+  const dir=document.getElementById('sortDir').value;
+
+  let rows=data.map(r=>({...r, odds:calcOdds(r), rating:calcRating(r)}));
+  rows=rows.filter(r=>r.prize.toLowerCase().includes(q));
+  if(siteF) rows=rows.filter(r=>r.site===siteF);
+
+  rows.sort((a,b)=>{
+    let A=a[field],B=b[field];
+    if(typeof A==='string'){return dir==='asc'?A.localeCompare(B):B.localeCompare(A);}
+    return dir==='asc'?A-B:B-A;
+  });
+
+  document.getElementById('tbody').innerHTML = rows.map(r=>`
+    <tr>
+      <td>${r.site}</td>
+      <td><a href="${r.url}" target="_blank">${r.prize}</a></td>
+      <td>£${r.value.toLocaleString()}</td>
+      <td>£${r.price.toFixed(2)}</td>
+      <td>1 in ${r.odds.toLocaleString()}</td>
+      <td>${r.sold}%</td>
+      <td>${r.drawDate}</td>
+      <td><span class="rating ${ratingClass(r.rating)}">${r.rating}/100</span></td>
+    </tr>`).join('');
+}
+</script>
+</body>
+</html>
