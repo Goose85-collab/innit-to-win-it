@@ -48,11 +48,14 @@ def gbp(text):
     return None
 
 def max_amount(text, symbol):
-    amts = []
-    for a in re.findall(re.escape(symbol) + r"\s*([\d,]+(?:\.\d+)?)", text):
-        try: amts.append(float(a.replace(",", "")))
-        except: pass
-    return max(amts) if amts else 0
+    best = 0
+    for m in re.finditer(re.escape(symbol) + r"\s*([\d,]+(?:\.\d+)?)\s*([KkMm]?)", text):
+        num = float(m.group(1).replace(",", ""))
+        suf = m.group(2).lower()
+        if suf == "k": num *= 1000
+        elif suf == "m": num *= 1000000
+        if num > best: best = num
+    return best
 
 # ---------- Bear Competitions (£) ----------
 def scrape_bear():
@@ -117,7 +120,7 @@ def scrape_ooosch():
         price = (min(prices) / 100) if prices else 0
         maxn = int(stock.group(1))
         sold_n = int(sold.group(1)) if sold else 0
-        prize = title.group(1).encode().decode("unicode_escape", "ignore")
+        prize = title.group(1).replace('\\/', '/').replace('\\"', '"')
         d = {
             "site": "Ooosch",
             "url": BASE + "/product/" + slug.group(1),
