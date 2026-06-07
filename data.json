@@ -1,25 +1,4 @@
 {
   "updated": "2026-06-07",
-  "competitions": [
-    {
-      "site": "Bear Competitions",
-      "prize": "Win a Luxury Spain Apartment or £300,000",
-      "value": 300000,
-      "price": 1.00,
-      "maxTickets": 699999,
-      "sold": 52.2,
-      "drawDate": "2026-06-07",
-      "url": "https://bearcompetitions.com/competition/santaor300"
-    },
-    {
-      "site": "Bear Competitions",
-      "prize": "£250,000 Instant Win",
-      "value": 250000,
-      "price": 1.19,
-      "maxTickets": 500000,
-      "sold": 6.7,
-      "drawDate": "2026-06-28",
-      "url": "https://bearcompetitions.com/competition/ps250000-instant-win"
-    }
-  ]
+  "competitions": []
 }
