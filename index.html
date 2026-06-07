@@ -56,8 +56,8 @@
     <tr>
       <th onclick="sortBy('site')">Site</th>
       <th onclick="sortBy('prize')">Prize</th>
-      <th onclick="sortBy('value')">Value (£)</th>
-      <th onclick="sortBy('price')">Ticket (£)</th>
+      <th onclick="sortBy('value')">Value</th>
+      <th onclick="sortBy('price')">Ticket</th>
       <th onclick="sortBy('odds')">Odds (1 in...)</th>
       <th onclick="sortBy('sold')">% Sold</th>
       <th onclick="sortBy('drawDate')">Draw Date</th>
@@ -73,10 +73,12 @@ let data = [];
 
 function calcOdds(r){ return r.maxTickets; }
 function calcRating(r){
+  if(!r.value || !r.price || !r.maxTickets) return 0;
   const raw = (r.value / r.price) / r.maxTickets;
   return Math.min(100, Math.round(raw * 100));
 }
 function ratingClass(n){ return n>=50?'high':n>=20?'mid':'low'; }
+function cur(r){ return r.currency || '£'; }
 
 fetch('data.json?' + Date.now())
   .then(res => res.json())
@@ -88,7 +90,7 @@ fetch('data.json?' + Date.now())
   })
   .catch(e => {
     document.getElementById('tbody').innerHTML =
-      '<tr><td colspan="8">Could not load data. If viewing on your computer, view it via your GitHub Pages web address instead.</td></tr>';
+      '<tr><td colspan="8">Could not load data. View via your GitHub Pages web address.</td></tr>';
   });
 
 function populateSites(){
@@ -125,11 +127,11 @@ function render(forceField){
     <tr>
       <td>${r.site}</td>
       <td><a href="${r.url}" target="_blank">${r.prize}</a></td>
-      <td>£${r.value.toLocaleString()}</td>
-      <td>£${r.price.toFixed(2)}</td>
+      <td>${cur(r)}${(r.value||0).toLocaleString()}</td>
+      <td>${cur(r)}${(r.price||0).toFixed(2)}</td>
       <td>1 in ${r.odds.toLocaleString()}</td>
       <td>${r.sold}%</td>
-      <td>${r.drawDate}</td>
+      <td>${r.drawDate||''}</td>
       <td><span class="rating ${ratingClass(r.rating)}">${r.rating}/100</span></td>
     </tr>`).join('');
 }
