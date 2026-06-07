@@ -98,26 +98,26 @@ def scrape_ooosch():
     BASE = "https://www.ooosch.com"
     html = fetch(BASE + "/", raw=True)
     comps = []
-    markers = [(m.start(), m.group(1)) for m in re.finditer(r'(\w+)\.reference_id = "prod_', html)]
+    markers = [(m.start(), m.group(1)) for m in re.finditer(r'(\w+)\.reference_id\s*=\s*"prod_', html)]
     markers.append((len(html), None))
     print("  ooosch found", len(markers) - 1, "product blocks")
     for i in range(len(markers) - 1):
         block = html[markers[i][0]:markers[i + 1][0]]
-        status = re.search(r'\.status = "([^"]*)"', block)
+        status = re.search(r'\.status\s*=\s*"([^"]*)"', block)
         if not status or status.group(1) != "LIVE":
             continue
-        title = re.search(r'\.title = "((?:[^"\\]|\\.)*)"', block)
-        slug = re.search(r'\.slug = "([^"]*)"', block)
-        stock = re.search(r'\.stock = (\d+)', block)
-        sold = re.search(r'\.stock_sold = (\d+)', block)
-        end = re.search(r'\.end_date = new Date\((\d+)\)', block)
+        title = re.search(r'\.title\s*=\s*"((?:[^"\\]|\\.)*)"', block)
+        slug = re.search(r'\.slug\s*=\s*"([^"]*)"', block)
+        stock = re.search(r'\.stock\s*=\s*(\d+)', block)
+        sold = re.search(r'\.stock_sold\s*=\s*(\d+)', block)
+        end = re.search(r'\.end_date\s*=\s*new Date\((\d+)\)', block)
         if not (title and slug and stock and int(stock.group(1)) > 0):
             continue
-        prices = [int(p) for p in re.findall(r'price_eur: (\d+)', block) if int(p) > 0]
+        prices = [int(p) for p in re.findall(r'price_eur:\s*(\d+)', block) if int(p) > 0]
         price = (min(prices) / 100) if prices else 0
         maxn = int(stock.group(1))
         sold_n = int(sold.group(1)) if sold else 0
-        prize = title.group(1)
+        prize = title.group(1).encode().decode("unicode_escape", "ignore")
         d = {
             "site": "Ooosch",
             "url": BASE + "/product/" + slug.group(1),
@@ -136,7 +136,7 @@ def main():
     global _ctx
     all_comps = []
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True, args=["--disable-blink-features=AutomationControlled"])
+        browser = p.chromium.launch(headless=False, args=["--disable-blink-features=AutomationControlled"])
         _ctx = browser.new_context(
             user_agent=("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"),
