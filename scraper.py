@@ -9,8 +9,25 @@ def fetch(url):
     page = _ctx.new_page()
     try:
         page.goto(url, wait_until="domcontentloaded", timeout=60000)
-        page.wait_for_timeout(3500)  # let Cloudflare checks clear
-        return page.content()
+        # Try to wait for Cloudflare's "Just a moment" to clear
+        for _ in range(15):  # up to ~15s
+            page.wait_for_timeout(1000)
+            html = page.content()
+            low = html.lower()
+            if "just a moment" not in low and "checking your browser" not in low and len(html) > 5000:
+                break
+        try:
+            page.wait_for_load_state("networkidle", timeout=15000)
+        except Exception:
+            pass
+        html = page.content()
+        # Diagnostic
+        flag = ""
+        l = html.lower()
+        if "just a moment" in l or "checking your browser" in l or "cf-challenge" in l:
+            flag = " [CLOUDFLARE CHALLENGE]"
+        print(f"  fetched {url} -> {len(html)} chars{flag}")
+        return html
     finally:
         page.close()
 
@@ -33,6 +50,7 @@ def scrape_bear():
     BASE = "https://bearcompetitions.com"
     html = fetch(BASE + "/all-competitions")
     urls = sorted(set(re.findall(r'href="(https://bearcompetitions\.com/competition/[^"]+)"', html)))
+    print("  bear found", len(urls), "competition links")
     comps = []
     for url in urls:
         try:
@@ -73,6 +91,7 @@ def scrape_ooosch():
     comps = []
     markers = [(m.start(), m.group(1)) for m in re.finditer(r'(\w+)\.reference_id = "prod_', html)]
     markers.append((len(html), None))
+    print("  ooosch found", len(markers) - 1, "product blocks")
     for i in range(len(markers) - 1):
         block = html[markers[i][0]:markers[i + 1][0]]
         status = re.search(r'\.status = "([^"]*)"', block)
