@@ -2,12 +2,20 @@ import json, re
 from datetime import date, datetime, timezone
 import urllib.request
 
-HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; InnitBot/1.0)"}
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-GB,en;q=0.9",
+    "Accept-Encoding": "identity",
+    "Connection": "keep-alive",
+    "Upgrade-Insecure-Requests": "1",
+}
 
 def fetch(url):
     req = urllib.request.Request(url, headers=HEADERS)
     with urllib.request.urlopen(req, timeout=30) as r:
         return r.read().decode("utf-8", "ignore")
+
 
 def gbp(text):
     m = re.search(r"£\s*([\d,]+(?:\.\d+)?)", text)
