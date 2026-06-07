@@ -142,6 +142,40 @@ def scrape_thatprizeguy():
         comps.append(d)
     print("  thatprizeguy found", len(comps), "competitions")
     return comps
+    
+# ---------- McKinney Competitions (£) ----------
+def scrape_mckinney():
+    BASE = "https://mckinneycompetitions.com"
+    home = fetch(BASE + "/")
+    slugs = sorted(set(re.findall(r'/competition/([a-z0-9\-]+)', home)))
+    print("  mckinney found", len(slugs), "competition links")
+    comps = []
+    for slug in slugs:
+        url = BASE + "/competition/" + slug
+        try:
+            h = fetch(url)
+            d = {"site": "McKinney", "url": url, "currency": "£"}
+            m = re.search(r'comp-title[^>]*>\s*(.*?)\s*</h1>', h, re.S)
+            if not m:
+                continue
+            d["prize"] = re.sub(r'\s+', ' ', m.group(1)).strip()
+            tk = re.search(r'fw-m">\s*([\d,]+)\s*</span>\s*/\s*<span[^>]*>\s*([\d,]+)', h)
+            if not tk:
+                continue
+            sold_n = int(tk.group(1).replace(",", ""))
+            maxn = int(tk.group(2).replace(",", ""))
+            if not maxn:
+                continue
+            d["maxTickets"] = maxn
+            d["sold"] = round(sold_n / maxn * 100, 1)
+            pm = re.search(r'dynamicPrice"[^>]*>\s*£?([\d.,]+)', h)
+            d["price"] = float(pm.group(1).replace(",", "")) if pm else 0
+            d["value"] = max_amount(d["prize"], "£")
+            d["drawDate"] = ""
+            comps.append(d)
+        except Exception as e:
+            print("mckinney skip", url, e)
+    return comps
 
 # ---------- Ooosch (€) ----------
 def scrape_ooosch():
@@ -193,7 +227,7 @@ def main():
             locale="en-GB",
             viewport={"width": 1366, "height": 900},
         )
-        for fn in (scrape_ooosch, scrape_thatprizeguy):
+                for fn in (scrape_ooosch, scrape_mckinney):
             try:
                 got = fn()
                 all_comps += got
