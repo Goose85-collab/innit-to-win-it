@@ -41,9 +41,15 @@ def parse(url):
         if m: price = money(m.group(1))
     d["price"] = price if price else 0
 
-    amts = [money("£" + a) for a in re.findall(r"£\s*([\d,]+(?:\.\d+)?)", d["prize"])]
-    amts = [a for a in amts if a]
-    d["value"] = max(amts) if amts else 0
+    # ===== UPDATED: use the "Cash Alternative" label first =====
+    m = re.search(r"£?\s*([\d,]+(?:\.\d+)?)\s*Cash Alternative", html, re.I)
+    if m:
+        d["value"] = float(m.group(1).replace(",", ""))
+    else:
+        amts = [money("£" + a) for a in re.findall(r"£\s*([\d,]+(?:\.\d+)?)", d["prize"])]
+        amts = [a for a in amts if a]
+        d["value"] = max(amts) if amts else 0
+    # ===========================================================
 
     m = re.search(r"draw the winner on\s*([A-Za-z]+ [A-Za-z]+ \d+)", html)
     d["drawDate"] = m.group(1) if m else ""
